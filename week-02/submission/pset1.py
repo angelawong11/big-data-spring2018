@@ -52,7 +52,7 @@ def numC(high, low=0):
     return randint(low, high)
 assert(0 <= numC(100) <= 100)
 assert(50 <= numC(100, low = 50) <= 100)
-numC(40,5)
+numC(40,)
 
 
 #D String Formatting Function
@@ -85,7 +85,6 @@ def password(inputpw):
     else:
         print('Error')
 password('Qwerty45$')
-
 
 #F Exponentiation Function
 def exp(x,y):
