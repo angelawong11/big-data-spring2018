@@ -29,6 +29,7 @@ import matplotlib.pylab as plt
 %matplotlib inline
 
 # Read in the data
+df = pd.read_csv('/Users/phoebe/Dropbox (MIT)/big-data/data/skyhook_2017-07.csv', sep=',')
 
 df = pd.read_csv('week-03/data/skyhook_2017-07.csv', sep=',')
 
@@ -71,7 +72,9 @@ df.groupby('date_new')
 new = df.groupby('date_new')['count'].sum()
 plt.title('Total GPS Pings by Date')
 new.plot(kind='bar', color='red')
-
+## Angela, this is correct, but you can do this in fewer lines of code, such as:
+new = df.groupby('date_new')['count'].sum()
+new.plot(kind='bar', color='red', title='Total GPS Pings by Date')
 ```
 
 ## Problem 2: Modify the Hours Column
@@ -106,6 +109,9 @@ Now that you have both a date and a time (stored in a more familiar 24-hour rang
 df['hour_new'] = pd.to_timedelta(df['hour'], unit = 'h')
 df['timestamp'] = df['date_new'] + df['hour_new']
 df['timestamp']
+
+## Angela, again, this is correct but you can do it in one line of code:
+df['timestamp'] = df['date_new'] + pd.to_timedelta(df['hour'], unit = 'h')
 
 ```
 
@@ -157,6 +163,9 @@ mask1.columns
 mask1.plot.scatter(x='lon', y='lat', s=df['count']*.5)
 plt.title(f'GPS Pings by Location on {timeScat}')
 
+## Angela, great job. A few small notes. First, you are using df['count'] to set your sizes, not mask1['count']. This is giving you an inflated number of counts. Second, you can do these charts with fewer lines of code. You are not marked off for this, such just an FYI. Such as:
+july_26 = df[df['timestamp'] == pd.Timestamp('2017-07-26 20:00:00')]
+july_26.plot.scatter(x = 'lon', y = 'lat', s = july_26['count']*.5)
 ```
 
 ## Problem 6: Analyze Your (Very) Preliminary Findings
