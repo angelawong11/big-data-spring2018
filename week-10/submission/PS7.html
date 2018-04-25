@@ -39,11 +39,14 @@ var quantize = d3.scale.quantize()
 
 var rateById = d3.map();
 
-var projection = d3.geo.albersUsa()
-    .scale(1000)
+
+var projection = d3.geo.albers()
+    .center([0, 37.8])
+.rotate([85.8,0])
+    .scale(8000)
     .translate([width / 2, height / 2]);
 
-var path = d3.geo.path()
+var geoPath = d3.geo.path()
     .projection(projection);
 
 queue()
@@ -51,16 +54,16 @@ queue()
     .defer(d3.csv, "../data/boston_311_totals.csv", function(d) { rateById.set(d.id, +d.Name, +d.twit_count, +d.tot_count); })
     .await(ready);
 
-function ready(error, city) {
+function ready(error, bos, twit) {
   if (error) throw error;
 
   svg.append("g")
       .selectAll("path")
-      .data(topojson.feature(city, city.objects.ObjectID).features)
+      .data(topojson.feature(bos, bos.objects.boston_neigh).features)
       .enter()
       .append("path")
       .attr( "d", geoPath )
-      .attr("class","city");
+      .attr("class", "neighborhoods");
 }
 
     </script>
