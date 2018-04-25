@@ -1,0 +1,68 @@
+
+<html>
+<head>
+    <title>PS7</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <!-- <script src="../../data/boston_neigh.json"></script> -->
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        .city {
+          stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <script>
+
+    var width = 720,
+        height = 500;
+
+
+    var svg = d3.select( "body" )
+        .append( "svg" )
+        .attr( "width", width )
+        .attr( "height", height );
+
+    var g = svg.append( "g" );
+
+
+
+var quantize = d3.scale.quantize()
+        .domain([0, .15])
+        .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+
+var rateById = d3.map();
+
+var projection = d3.geo.albersUsa()
+    .scale(1000)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+queue()
+    .defer(d3.json, "../data/boston_neigh.json")
+    .defer(d3.csv, "../data/boston_311_totals.csv", function(d) { rateById.set(d.id, +d.Name, +d.twit_count, +d.tot_count); })
+    .await(ready);
+
+function ready(error, city) {
+  if (error) throw error;
+
+  svg.append("g")
+      .selectAll("path")
+      .data(topojson.feature(city, city.objects.ObjectID).features)
+      .enter()
+      .append("path")
+      .attr( "d", geoPath )
+      .attr("class","city");
+}
+
+    </script>
+</body>
+</html>
